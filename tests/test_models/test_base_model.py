@@ -18,13 +18,12 @@ class BaseModelTestCase(unittest.TestCase):
         self.assertTrue(type(base.created_at) == datetime)
         self.assertTrue(type(base.updated_at) == datetime)
 
-    def test_instance_with_args(self):
-        """test the creation of an instance with *args"""
-        pass
-
     def test_instance_with_kwargs(self):
         """test the creation of an instance with **kwargs"""
-        pass
+        base = BaseModel()
+        base_dict = base.to_dict()
+        new_base = BaseModel(base_dict)
+        self.assertFalse(base is new_base)
 
     def test_public_instance_methods(self):
         """tests the instance public methods"""
