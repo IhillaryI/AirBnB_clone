@@ -32,7 +32,11 @@ class BaseModel():
     def to_dict(self):
         """returns the dictionary containing all key/value pairs
         of __dict__ of the instance"""
-        return self.__dict__
+        obj = self.__dict__
+        obj['created_at'] = str(obj['created_at'].isoformat())
+        obj['updated_at'] = str(obj['updated_at'].isoformat())
+        obj['__class__'] = f"{BaseModel.__name__}"
+        return obj
 
     def __str__(self):
         """method to print the class in string form"""
