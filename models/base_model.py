@@ -18,11 +18,20 @@ class BaseModel():
         created_at (datetime): time the instance was created
         updated_at (datetime): time the instance was updated
     """
-    def __init__(self):
+    def __init__(self, *arg, **kwargs):
         """initializes the instance"""
-        self.id = str(uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = self.created_at
+        if len(kwargs.values()) > 0:
+            for key in kwargs.keys():
+                if key == '__class__':
+                    continue
+                if key == 'created_at' or key == 'updated_at':
+                    setattr(self, key, datetime.fromisoformat(kwargs[key]))
+                    continue
+                setattr(self, key, kwargs[key])
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.today()
+            self.updated_at = self.created_at
 
     def save(self):
         """updates the public instance attribute updated_at
