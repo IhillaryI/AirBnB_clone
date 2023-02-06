@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Module contains a class BaseModel which will serve as the 
+Module contains a class BaseModel which will serve as the
 Base for future classes to be created in the project
 """
 
@@ -12,7 +12,7 @@ from datetime import datetime
 class BaseModel():
     """class BaseModel defines all common attributes
     for other classes
-    
+
     Attributes:
         id (str): unique id created with uuid4
         created_at (datetime): time the instance was created
@@ -25,7 +25,7 @@ class BaseModel():
         self.updated_at = self.created_at
 
     def save(self):
-        """updates the public instance attribute updated_at 
+        """updates the public instance attribute updated_at
         with the current datetime"""
         self.updated_at = datetime.today()
 
