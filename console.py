@@ -61,7 +61,6 @@ class HBNBCommand(cmd.Cmd):
                 print(instance)
             else:
                 print("** no instance found **")
-                print("args => ", args)
 
     def do_destroy(self, line):
         """Deletes an instance base on the class name and id
@@ -70,6 +69,8 @@ class HBNBCommand(cmd.Cmd):
             line (str): the input to destroy
         """
         command, args, line = self.parseline(line)
+        instance_key = None
+
         if command == None or command == "":
             print("** class name missing **")
         elif command not in classes.keys():
@@ -78,16 +79,77 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
         else:
             instances = storage.all()
-            intance_key = None
             for key, val in instances.items():
                 if val.id == args:
                     instance_key = key
-            if instance_key:
+            if instance_key is not None:
                 del instances[instance_key]
                 storage.save()
             else:
                 print("** no instance found **")
 
+    def do_all(self, line):
+        """Prints all string representations of all
+        instances based on or not on the class name
+
+        Args:
+            line (str): line input to all
+        """
+        command, args, line = self.parseline(line)
+        allobjs = storage.all()
+        all_str_repr = []
+
+        if command == None or command == "":
+            all_str_repr = [val.__str__() for val in allobjs.values()]
+            print(all_str_repr)
+        else:
+            if command not in classes.keys():
+                print("** class doesn't exist **")
+            else:
+                all_str_repr = [val.__str__() for val in allobjs.values() if val.__class__.__name__ == command.strip()]
+                print(all_str_repr)
+
+    def do_update(self, line):
+        """Updates an instance based on the class name 
+        and id by adding or updating attribute
+
+        Args:
+            line (str): line input to update
+        Usage: update <class name> <id> <attribute name> "<attribute value>
+        """
+        command, args, line = self.parseline(line)
+        allobjs = storage.all()
+        instance_key = None
+
+        if command == None or command == "":
+            print("** class name missing **")
+            return
+        if command not in classes.keys():
+            print("** class name doesn't exist **")
+            return
+
+        if args == "" or args == None:
+            print("** instance id missing **")
+        else:
+            for key, val in allobjs.items():
+                if val.id == args.split()[0]:
+                    instance_key = key
+            if instance_key == None:
+                print("** no instance found **")
+            else:
+                if len(args.split()) < 2:
+                    print("** attribute name missing **")
+                elif len(args.split()) < 3:
+                    print("** value missing **")
+                else:
+                    obj = allobjs[instance_key]
+                    ID, attr, val = args.split()[:3]
+                    if hasattr(obj, attr):
+                        attr_type = type(getattr(obj, attr))
+                        setattr(obj, attr, attr_type(val.strip('"')))
+                    else:
+                        setattr(obj, attr, val.strip('"'))
+                    storage.save()
 
     def do_quit(self, line):
         """Quit command to exit the program
