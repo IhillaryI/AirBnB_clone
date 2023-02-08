@@ -7,6 +7,7 @@ Base for future classes to be created in the project
 
 from uuid import uuid4
 from datetime import datetime
+from models import storage
 
 
 class BaseModel():
@@ -20,31 +21,34 @@ class BaseModel():
     """
     def __init__(self, *arg, **kwargs):
         """initializes the instance"""
-        if len(kwargs.values()) > 0:
+        if len(kwargs.items()) > 0:
             for key in kwargs.keys():
                 if key == '__class__':
                     continue
                 if key == 'created_at' or key == 'updated_at':
                     setattr(self, key, datetime.fromisoformat(kwargs[key]))
                     continue
-                setattr(self, key, kwargs[key])
+                else:
+                    setattr(self, key, kwargs[key])
         else:
             self.id = str(uuid4())
             self.created_at = datetime.today()
-            self.updated_at = self.created_at
+            self.updated_at = datetime.today()
+            storage.new(self)
 
     def save(self):
         """updates the public instance attribute updated_at
         with the current datetime"""
         self.updated_at = datetime.today()
+        storage.save()
 
     def to_dict(self):
         """returns the dictionary containing all key/value pairs
         of __dict__ of the instance"""
-        obj = self.__dict__
-        obj['created_at'] = str(obj['created_at'].isoformat())
-        obj['updated_at'] = str(obj['updated_at'].isoformat())
-        obj['__class__'] = f"{BaseModel.__name__}"
+        obj = self.__dict__.copy()
+        obj['created_at'] = obj['created_at'].isoformat()
+        obj['updated_at'] = obj['updated_at'].isoformat()
+        obj['__class__'] = f"{self.__class__.__name__}"
         return obj
 
     def __str__(self):
