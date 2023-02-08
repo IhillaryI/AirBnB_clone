@@ -34,7 +34,11 @@ class BaseModelTestCase(unittest.TestCase):
         self.assertTrue(prev_updated_at != base.updated_at)
         self.assertTrue(type(base.to_dict()) == dict)
 
-    def test__str__output(self):
-        """test the __str__ method of the class"""
-        base = BaseModel()
-        self.assertEqual(type(base.__str__()), str)
+    def test_str_method(self):
+        """Test string method for instance."""
+        test_me = BaseModel()
+        class_name = test_me.__class__.__name__
+        obj_id = test_me.id
+        obj_dict = test_me.__dict__
+        obj_str = "[{}] ({}) {}".format(class_name, obj_id, obj_dict)
+        self.assertEqual(str(test_me), obj_str)
