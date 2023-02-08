@@ -15,7 +15,7 @@ def customEncoder(obj):
     return obj.to_dict()
 
 
-class FileStorage():
+class FileStorage:
     """serializes object instances to JSON
     and deserializes them
 
@@ -48,4 +48,5 @@ class FileStorage():
             with open(self.__file_path, "r", encoding="utf-8") as f:
                 loaded = json.load(f)
             self.__objects = {}
+            # Dictionary comprehension to the rescue
             self.__objects = {k: BaseModel(**v) for k, v in loaded.items()}
