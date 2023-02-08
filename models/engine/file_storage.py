@@ -10,8 +10,10 @@ import json
 import os
 import models
 
+
 def customEncoder(obj):
     return obj.to_dict()
+
 
 class FileStorage():
     """serializes object instances to JSON
@@ -46,4 +48,4 @@ class FileStorage():
             with open(self.__file_path, "r", encoding="utf-8") as f:
                 loaded = json.load(f)
             self.__objects = {}
-            self.__objects = {k: BaseModel(**v) for k,v in loaded.items()}
+            self.__objects = {k: BaseModel(**v) for k, v in loaded.items()}
