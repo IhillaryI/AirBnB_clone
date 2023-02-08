@@ -24,7 +24,7 @@ class FileStorageTestCase(unittest.TestCase):
         self.assertTrue(self.fs.__file_path == "mock.json")
         self.assertTrue(type(self.fs.__objects) == dict)
 
-    def  test_for_public_instance_methods(self):
+    def test_for_public_instance_methods(self):
         """tests the public instance methods"""
         base = BaseModel()
         obj = base.to_dict()
@@ -32,8 +32,9 @@ class FileStorageTestCase(unittest.TestCase):
         self.assertEqual(type(self.fs.all()), dict)
 
         self.assertEqual(self.fs.new(obj), None)
-        self.assertTrue(base == self.fs.__objects[f"{BaseModel.__name__}.{base.id}"])
-        
+        self.assertTrue(base ==
+                        self.fs.__objects[f"{BaseModel.__name__}.{base.id}"])
+
         self.assertEqual(self.fs.save(), None)
 
         self.assertEqual(self.fs.reload(), None)
