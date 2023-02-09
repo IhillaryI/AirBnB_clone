@@ -4,7 +4,9 @@
 Console contains the entry point of the command interpreter
 """
 
+import re
 import cmd
+import json
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -185,6 +187,23 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """overides the method in Cmd"""
         return
+
+    def default(self, line):
+        """handle non commands"""
+        allobjs = storage.all()
+        count = 0
+        cm, action, line = self.parseline(line)
+
+        if action == ".all()":
+            self.do_all(cm)
+        elif action == ".count()":
+            for val in allobjs.values():
+                if val.to_dict()["__class__"] == cm:
+                    count = count + 1
+            print(count)
+        else:
+            print(self.parseline(line))
+            print("** command not found **")
 
 
 if __name__ == '__main__':
