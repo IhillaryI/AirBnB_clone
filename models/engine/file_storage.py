@@ -14,10 +14,25 @@ def objSel(obj):
     """Selects the appropriate class"""
     from models.base_model import BaseModel
     from models.user import User
-    if obj["__class__"] == "BaseModel":
-        return BaseModel(**obj)
-    elif obj["__class__"] == "User":
-        return User(**obj)
+    from models.state import State
+    from models.place import Place
+    from models.city import City
+    from models.amenity import Amenity
+    from models.review import Review
+
+    classes = {
+            "BaseModel": BaseModel,
+            "User": User,
+            "State": State,
+            "Place": Place,
+            "City": City,
+            "Amenity": Amenity,
+            "Review": Review
+            }
+    for key in classes.keys():
+        if obj["__class__"] == key:
+            return classes[key](**obj)
+
 
 def customEncoder(obj):
     """Custom Encoder"""
