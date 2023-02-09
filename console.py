@@ -163,7 +163,7 @@ class HBNBCommand(cmd.Cmd):
                         setattr(obj, attr, attr_type(val.strip('"')))
                     else:
                         setattr(obj, attr, val.strip('"'))
-                    storage.save()
+                    obj.save()
 
     def do_quit(self, line):
         """Quit command to exit the program
