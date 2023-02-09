@@ -8,10 +8,19 @@ JSON file to instances
 
 import json
 import os
-import models
 
+
+def objSel(obj):
+    """Selects the appropriate class"""
+    from models.base_model import BaseModel
+    from models.user import User
+    if obj["__class__"] == "BaseModel":
+        return BaseModel(**obj)
+    elif obj["__class__"] == "User":
+        return User(**obj)
 
 def customEncoder(obj):
+    """Custom Encoder"""
     return obj.to_dict()
 
 
@@ -43,10 +52,9 @@ class FileStorage:
     def reload(self):
         """deserializes the JSON file to __objects
         (only if the JSON file(__file_path) exists"""
-        from models.base_model import BaseModel
         if os.path.exists(self.__file_path):
             with open(self.__file_path, "r", encoding="utf-8") as f:
                 loaded = json.load(f)
             self.__objects = {}
             # Dictionary comprehension to the rescue
-            self.__objects = {k: BaseModel(**v) for k, v in loaded.items()}
+            self.__objects = {k: objSel(v) for k, v in loaded.items()}
