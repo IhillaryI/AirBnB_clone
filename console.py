@@ -4,7 +4,9 @@
 Console contains the entry point of the command interpreter
 """
 
+import re
 import cmd
+import json
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -39,6 +41,9 @@ class HBNBCommand(cmd.Cmd):
 
         Args:
             line (str): the line input to create
+
+        Usage:
+            create BaseModel
         """
         command, args, line = self.parseline(line)
         if command is None:
@@ -50,12 +55,32 @@ class HBNBCommand(cmd.Cmd):
             obj.save()
             print(obj.id)
 
+    def complete_create(self, text, line, begidx, endix):
+        """Helps in text completion
+
+        Args:
+            text (str): text
+            line (str): line
+            begidx (int): begidx
+            endidx (int): endidx
+        """
+        if not text:
+            completions = classes.keys()
+        else:
+            completions = [f for f in classes.keys()
+                           if f.startswith(text)]
+        return completions
+
     def do_show(self, line):
         """Prints the string representation of an instance
         based on the class name and id
 
         Args:
             line (str): the line input to show
+
+        Usage:
+            show BaseModel 1234-1234-1234
+            User.show("1234-1234-1234")
         """
         command, args, line = self.parseline(line)
         if command is None or command == "":
@@ -74,6 +99,23 @@ class HBNBCommand(cmd.Cmd):
                 print(instance)
             else:
                 print("** no instance found **")
+
+    def complete_show(self, text, line, begidx, endidx):
+        """text completion for show command
+
+        Args:
+            text (str): text
+            line (str): line
+            begidx (int): begidx
+            endidx (int): endidx
+        """
+        if not text:
+            completions = classes.keys()
+        else:
+            completions = [f
+                           for f in classes.keys()
+                           if f.startswith(text)]
+        return completions
 
     def do_destroy(self, line):
         """Deletes an instance base on the class name and id
@@ -185,6 +227,62 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """overides the method in Cmd"""
         return
+
+    def default(self, line):
+        """handle non commands"""
+        allobjs = storage.all()
+        count = 0
+        cm, action, line = self.parseline(line)
+
+        if action == ".all()":
+            self.do_all(cm)
+            return
+        if action == ".count()":
+            for val in allobjs.values():
+                if val.to_dict()["__class__"] == cm:
+                    count = count + 1
+            print(count)
+            return
+
+        m = re.match(r'.show\(["\'](.+)["\']\)', action)
+        if m is not None:
+            self.do_show(f"{cm} {m.groups()[0]}")
+            return
+
+        m = re.match(r'.destroy\(["\'](.+)["\']\)', action)
+        if m is not None:
+            self.do_destroy(f"{cm} {m.groups()[0]}")
+            return
+
+        pattern = r'.update\(["\'](.+)["\'],'\
+            r' ["\'](.+)["\'], ["\']?(.+)\b["\']?\)'
+        m = re.match(pattern, action)
+        if m is not None:
+            Id, key, val = m.groups()
+            self.do_update(f"{cm} {Id} {key} {val}")
+            return
+
+        pattern = r'.update\(["\'](.+)["\'],'\
+            r' (\{["\'](.+)["\']: ["\'](.+)["\'],'\
+            r' ["\'](.+)["\']: (.+)\})\)'
+        m = re.match(pattern, action)
+        if m is not None:
+            found = None
+            Id, obj = m.groups()[:2]
+            for val in allobjs.values():
+                if val.id == Id:
+                    found = True
+            if found:
+                obj = obj.replace("'", '"')
+                obj = json.loads(f"{obj}")
+                for key, val in obj.items():
+                    self.do_update(f"{cm} {Id} {str(key)} {str(val)}")
+                return
+            else:
+                print("** no instance found **")
+                return
+
+        print("** unknown operation **")
 
 
 if __name__ == '__main__':
