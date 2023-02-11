@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Modules creates class FileStorage
 that serializes instances to a JSON file and deserializes

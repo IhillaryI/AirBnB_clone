@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Module contains a class BaseModel which will serve as the
 Base for future classes to be created in the project

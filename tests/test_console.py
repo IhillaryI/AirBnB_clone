@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Module contains Unit tests for
 Module console.py

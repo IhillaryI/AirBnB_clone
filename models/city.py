@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Module contains class City
 which inherits from BaseModel

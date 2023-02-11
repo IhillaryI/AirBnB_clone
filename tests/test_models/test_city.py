@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Module contains test case
 for City class

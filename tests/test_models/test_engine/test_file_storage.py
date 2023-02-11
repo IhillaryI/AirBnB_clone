@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Module contains Tests for file_storage.py,
 located in models/engine/file_storage.py

@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 """
 Test case for module: base_model
 from package: models
