@@ -16,10 +16,6 @@ class FileStorageTestCase(unittest.TestCase):
         """sets up the test"""
         self.fs = FileStorage()
 
-    def test_for_class_attributes(self):
-        """tests_for_private_class_attributes"""
-        pass
-
     def test_for_public_instance_methods(self):
         """tests the public instance methods"""
         base = BaseModel()
@@ -33,3 +29,20 @@ class FileStorageTestCase(unittest.TestCase):
 
         self.assertEqual(self.fs.reload(), None)
         self.assertTrue(path.isfile("file.json"))
+
+    def test_reload_and_creation(self):
+        """tests reload and creation of object"""
+        allobjs = self.fs.all()
+        self.assertTrue(type(allobjs) == dict)
+        for obj_id in allobjs.keys():
+            obj = allobjs[obj_id]
+            self.assertTrue(str(obj).startswith(
+                             f"[{obj.__class__.__name__}]"
+                             f" ({obj.id})"))
+        base = BaseModel()
+        base.name = "Base"
+        base.number = 2
+        base.save()
+        self.assertTrue(str(base).startswith(
+                         f"[{base.__class__.__name__}]"
+                         f" ({base.id})"))
