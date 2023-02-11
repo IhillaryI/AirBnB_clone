@@ -80,7 +80,9 @@ class HBNBCommand(cmd.Cmd):
 
         Usage:
             show BaseModel 1234-1234-1234
-            User.show("1234-1234-1234")
+            OR
+            <class>.show("1234-1234-1234")
+                i.e User.show(<id>)
         """
         command, args, line = self.parseline(line)
         if command is None or command == "":
@@ -122,6 +124,13 @@ class HBNBCommand(cmd.Cmd):
 
         Args:
             line (str): the input to destroy
+
+        Usage:
+            destroy <class> <id>
+                i.e destroy BaseModel 1234-1243-1234
+            OR
+            <class>.destroy(<id>)
+                i.e User.destroy("1234-1234-1234")
         """
         command, args, line = self.parseline(line)
         instance_key = None
@@ -149,6 +158,15 @@ class HBNBCommand(cmd.Cmd):
 
         Args:
             line (str): line input to all
+
+        Usage:
+            all <class>
+                i.e all BaseModel
+            OR
+            all
+            OR
+            <class>.all()
+                i.e User.all()
         """
         command, args, line = self.parseline(line)
         allobjs = storage.all()
@@ -171,7 +189,13 @@ class HBNBCommand(cmd.Cmd):
 
         Args:
             line (str): line input to update
-        Usage: update <class name> <id> <attribute name> "<attribute value>
+        Usage:
+            update <class name> <id> <attribute name> "<attribute value>
+                i.e update User "1234-1234-1234" "age" 80
+            OR
+            i.e State.update("1234-1234-1234", "name", "Steve")
+            OR
+            i.e Amenity.update("2341-2413-2234", {"name": "Brandt", "age": 30})
         """
         command, args, line = self.parseline(line)
         allobjs = storage.all()
@@ -212,11 +236,17 @@ class HBNBCommand(cmd.Cmd):
 
         Args:
             line (str): None
+
+        Usage:
+            quit
         """
         return True
 
     def help_quit(self):
-        """Help text to print for quit command"""
+        """Help text to print for quit command
+        Usage:
+            quit
+        """
         print("Quit command to exit the program\n")
 
     def do_EOF(self, line):
