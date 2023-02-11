@@ -41,3 +41,17 @@ class BaseModelTestCase(unittest.TestCase):
         obj_dict = test_me.__dict__
         obj_str = "[{}] ({}) {}".format(class_name, obj_id, obj_dict)
         self.assertEqual(str(test_me), obj_str)
+
+    def test_intance_dictionary_obj(self):
+        """test the instance to_dict() object"""
+        base = BaseModel()
+        base.name = "Oscar"
+        base.number = 88
+        obj = base.to_dict()
+        self.assertEqual(obj["__class__"], "BaseModel")
+        self.assertTrue(type(obj) == dict)
+        self.assertTrue(type(obj["__class__"]) == str)
+        self.assertTrue(type(obj["created_at"]) == str)
+        self.assertTrue(type(obj["updated_at"]) == str)
+        self.assertTrue(obj["name"] == "Oscar")
+        self.assertTrue(obj["number"] == 88)
