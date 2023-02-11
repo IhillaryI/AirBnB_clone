@@ -25,3 +25,6 @@ class ConsoleTestCase(unittest.TestCase):
         with patch('sys.stdout', new = StringIO()) as f:
             HBNBCommand().onecmd("all")
             HBNBCommand().onecmd("all User")
+            HBNBCommand().onecmd("User.all()")
+            HBNBCommand().onecmd("BaseModel.all()")
+            HBNBCommand().onecmd("State.all()")
