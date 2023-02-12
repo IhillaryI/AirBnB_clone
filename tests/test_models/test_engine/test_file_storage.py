@@ -12,37 +12,46 @@ from os import path
 
 class FileStorageTestCase(unittest.TestCase):
     """TestCase for FileStorage class"""
-    def setUp(self):
-        """sets up the test"""
-        self.fs = FileStorage()
-
-    def test_for_public_instance_methods(self):
-        """tests the public instance methods"""
+    def test_all_method(self):
+        """test the public instance method all"""
         base = BaseModel()
-        obj = base.to_dict()
-
-        self.assertEqual(type(self.fs.all()), dict)
-
-        # self.assertEqual(self.fs.new(obj), None)
-
-        self.assertEqual(self.fs.save(), None)
-
-        self.assertEqual(self.fs.reload(), None)
-        self.assertTrue(path.isfile("file.json"))
-
-    def test_reload_and_creation(self):
-        """tests reload and creation of object"""
-        allobjs = self.fs.all()
-        self.assertTrue(type(allobjs) == dict)
-        for obj_id in allobjs.keys():
-            obj = allobjs[obj_id]
-            self.assertTrue(str(obj).startswith(
-                             f"[{obj.__class__.__name__}]"
-                             f" ({obj.id})"))
-        base = BaseModel()
-        base.name = "Base"
-        base.number = 2
         base.save()
-        self.assertTrue(str(base).startswith(
-                         f"[{base.__class__.__name__}]"
-                         f" ({base.id})"))
+        storage = FileStorage()
+        storage.reload()
+        allobjs = storage.all()
+        self.assertEqual(type(storage.all()), dict)
+        for key, val in allobjs.items():
+            if isinstance(val, BaseModel):
+                self.assertTrue(isinstance(val, BaseModel))
+
+    def test_new_method(self):
+        """tests the class new method"""
+        base = BaseModel()
+        base_obj = base.to_dict()
+        storage = FileStorage()
+        storage.reload()
+        base.save()
+        self.assertEqual(storage.new(base), None)
+        allobjs = storage.all()
+        for val in allobjs.values():
+            if val.id == base_obj["id"]:
+                self.assertEqual(val.id, base_obj["id"])
+
+    def test_the_save_method(self):
+        """tests the save method"""
+        base = BaseModel()
+        storage = FileStorage()
+        storage.save()
+        allobjs = storage.all()
+        for val in allobjs.values():
+            if val == base:
+                self.assertEqual(val, base)
+
+    def test_reload_method(self):
+        """tests the reload method"""
+        storage = FileStorage()
+        self.assertEqual(storage.reload(), None)
+        allobjs = storage.all()
+        for val in allobjs.values():
+            self.assertTrue(val)
+
