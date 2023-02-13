@@ -48,5 +48,15 @@ class FileStorageTestCase(unittest.TestCase):
     def test_reload_method(self):
         """tests the reload method"""
         storage = FileStorage()
-        self.assertIsNone(storage.reload())
+        storage.reload()
+        allobjs = storage.all()
+        self.assertNotEqual(allobjs, {})
+        base = BaseModel()
+        key = f"{base.__class__.__name__}.{base.id}"
+        self.assertTrue(key not in allobjs.keys())
+        storage.new(base)
+        storage.save()
+        storage.reload()
+        allobjs = storage.all()
+        self.assertTrue(key in allobjs.keys())
         self.assertTrue(storage.reload)
