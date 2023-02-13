@@ -6,6 +6,7 @@ from package: models
 import unittest
 from datetime import datetime
 from models.base_model import BaseModel
+from models import storage
 
 
 class BaseModelTestCase(unittest.TestCase):
@@ -55,3 +56,15 @@ class BaseModelTestCase(unittest.TestCase):
         self.assertTrue(type(obj["updated_at"]) == str)
         self.assertTrue(obj["name"] == "Oscar")
         self.assertTrue(obj["number"] == 88)
+
+    def test_save_method(self):
+        """tests the save method on BaseModel"""
+        base = BaseModel()
+        updated_at = base.updated_at
+        self.assertIsNone(base.save())
+        self.assertFalse(base.updated_at == updated_at)
+        allobjs = storage.all()
+        for val in allobjs.values():
+            if val == base:
+                self.assertTrue(base == val)
+
