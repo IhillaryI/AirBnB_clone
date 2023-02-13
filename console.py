@@ -144,7 +144,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             instances = storage.all()
             for key, val in instances.items():
-                if val.id == args:
+                if val.id == args and val.__class__.__name__ == command:
                     instance_key = key
             if instance_key is not None:
                 del instances[instance_key]
@@ -205,7 +205,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         if command not in classes.keys():
-            print("** class name doesn't exist **")
+            print("** class doesn't exist **")
             return
 
         if args == "" or args is None:
@@ -292,26 +292,24 @@ class HBNBCommand(cmd.Cmd):
             self.do_update(f"{cm} {Id} {key} {val}")
             return
 
-        pattern = r'.update\(["\'](.*)["\'],\s(.*)\)'
+        pattern = r'.update\(["\'](.*)["\'],\s*'\
+            r'(\{(["\'](.*)["\']\s*?:["\']?(.*)["\']?,?)+\})\)'
         m = re.match(pattern, action)
         if m is not None:
             found = None
-            Id, obj = m.groups()
+            Id, obj = m.groups()[:2]
             for val in allobjs.values():
                 if val.id == Id:
                     found = True
-            pattern = r'\{(["\'](.+)["\']\s*:\s*["\']?(.*)["\']?)+,?\}'
-            k = re.match(pattern, obj)
-            if k:
-                if found:
-                    obj = obj.replace("'", '"')
-                    obj = json.loads(f"{obj}")
-                    for key, val in obj.items():
-                        self.do_update(f"{cm} {Id} {str(key)} {str(val)}")
-                    return
-                else:
-                    print("** no instance found **")
+            if found:
+                obj = obj.replace("'", '"')
+                obj = json.loads(f"{obj}")
+                for key, val in obj.items():
+                    self.do_update(f"{cm} {Id} {str(key)} {str(val)}")
                 return
+            else:
+                print("** no instance found **")
+            return
 
         print(f"*** Unknown syntax: {line}")
 
