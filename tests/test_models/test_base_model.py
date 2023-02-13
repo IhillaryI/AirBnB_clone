@@ -4,8 +4,10 @@ Test case for module: base_model
 from package: models
 """
 import unittest
+from os import path
 from datetime import datetime
 from models.base_model import BaseModel
+from models import storage
 
 
 class BaseModelTestCase(unittest.TestCase):
@@ -62,4 +64,7 @@ class BaseModelTestCase(unittest.TestCase):
         base.name = "My_Base"
         updated_at = base.updated_at
         base.save()
+        key = f"{base.__class__.__name__}.{base.id}"
+        storage.reload()
+        self.assertTrue(key in storage.all().keys())
         self.assertFalse(base.updated_at == updated_at)
