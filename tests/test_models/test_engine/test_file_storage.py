@@ -33,10 +33,17 @@ class FileStorageTestCase(unittest.TestCase):
 
     def test_the_save_method(self):
         """tests the save method"""
+        base = BaseModel()
         storage = FileStorage()
+        storage.new(base)
+        storage.save()
         self.assertIsNone(storage.save())
         self.assertTrue(path.isfile("file.json"))
         self.assertTrue(storage.save)
+        storage.reload()
+        allobjs = storage.all()
+        key = f"{base.__class__.__name__}.{base.id}"
+        self.assertTrue(key in allobjs.keys())
 
     def test_reload_method(self):
         """tests the reload method"""
