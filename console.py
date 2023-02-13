@@ -292,26 +292,24 @@ class HBNBCommand(cmd.Cmd):
             self.do_update(f"{cm} {Id} {key} {val}")
             return
 
-        pattern = r'.update\(["\'](.*)["\'],\s(.*)\)'
+        pattern = r'.update\(["\'](.*)["\'],\s*'\
+            r'(\{(["\'](.*)["\']\s*?:["\']?(.*)["\']?,?)+\})\)'
         m = re.match(pattern, action)
         if m is not None:
             found = None
-            Id, obj = m.groups()
+            Id, obj = m.groups()[:2]
             for val in allobjs.values():
                 if val.id == Id:
                     found = True
-            pattern = r'\{(["\'](.+)["\']\s*:\s*["\']?(.*)["\']?)+,?\}'
-            k = re.match(pattern, obj)
-            if k:
-                if found:
-                    obj = obj.replace("'", '"')
-                    obj = json.loads(f"{obj}")
-                    for key, val in obj.items():
-                        self.do_update(f"{cm} {Id} {str(key)} {str(val)}")
-                    return
-                else:
-                    print("** no instance found **")
+            if found:
+                obj = obj.replace("'", '"')
+                obj = json.loads(f"{obj}")
+                for key, val in obj.items():
+                    self.do_update(f"{cm} {Id} {str(key)} {str(val)}")
                 return
+            else:
+                print("** no instance found **")
+            return
 
         print(f"*** Unknown syntax: {line}")
 
