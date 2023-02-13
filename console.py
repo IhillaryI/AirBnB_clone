@@ -144,7 +144,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             instances = storage.all()
             for key, val in instances.items():
-                if val.id == args:
+                if val.id == args and val.__class__.__name__ == command:
                     instance_key = key
             if instance_key is not None:
                 del instances[instance_key]
