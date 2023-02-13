@@ -24,15 +24,12 @@ class FileStorageTestCase(unittest.TestCase):
     def test_new_method(self):
         """tests the class new method"""
         base = BaseModel()
-        base_dict = base.to_dict()
-        new_base = BaseModel(base_dict)
         storage = FileStorage()
-        self.assertTrue(storage.new)
-        self.assertIsNone(storage.new(new_base))
-        allobjs = storage.all()
-        for val in allobjs.values():
-            if val == new_base:
-                self.assertEqual(val, new_base)
+        storage.new(base)
+        obj = storage.all()
+        key = base.__class__.__name__ + '.' + base.id
+        self.assertIn(key, obj.keys())
+        self.assertEqual(obj[key], base)
 
     def test_the_save_method(self):
         """tests the save method"""
