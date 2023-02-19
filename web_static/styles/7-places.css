@@ -1,0 +1,24 @@
+.places h1 {
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+.places_listing {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.places_listing article{
+    width: 390px;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ff5a5f;
+    border-radius: 4px;
+}
+
+.places_listing article h2 {
+    text-align: center;
+    font-size: 30px;
+    margin: 0;
+}
